@@ -199,7 +199,7 @@ class AuroraExperience {
     }
 
     generateStars() {
-        const STAR_SIZE = 4; // Size in pixels
+        const STAR_SIZE = 12; // Size in pixels
         const starSizePercent = (STAR_SIZE / this.elements.container.clientWidth) * 100;
         
         for (let i = 0; i < this.state.totalStars; i++) {
@@ -246,7 +246,7 @@ class AuroraExperience {
             if (!star.collected) {
                 const distance = Math.hypot(x - star.x, y - star.y);
     
-                if (distance < 1.5) {
+                if (distance < 1.8) {
                     star.collected = true;
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
@@ -254,14 +254,14 @@ class AuroraExperience {
                     // Adjusted aura values for better visibility
                     const auraStrength = Math.min(this.state.collectedStars / this.state.totalStars, 1);
                     const baseRadius = 20; // Base radius in pixels
-                    const maxRadiusIncrease = 80; // Max radius increase based on stars
+                    const maxRadiusIncrease = 160; // Max radius increase based on stars
                     const baseOpacity = 0.5; // Base opacity for visibility
-                    const maxOpacityIncrease = 0.5; // Max opacity increase to make it shine more
+                    const maxOpacityIncrease = 1.0; // Max opacity increase to make it shine more
     
                     // Set the box-shadow dynamically based on stars collected
                     this.elements.cursor.style.boxShadow = `0 0 ${baseRadius + auraStrength * maxRadiusIncrease}px rgba(255, 255, 255, ${baseOpacity + auraStrength * maxOpacityIncrease})`;
     
-                    this.elements.auroraGradient.style.opacity = (this.state.collectedStars / this.state.totalStars) * 0.8;
+                    this.elements.auroraGradient.style.opacity = (this.state.collectedStars / this.state.totalStars) * 1.0;
     
                     try {
                         this.audio.eat.currentTime = 0;
@@ -279,6 +279,9 @@ class AuroraExperience {
     }
     
     startPhase2() {
+        this.elements.cursor.style.boxShadow = `0 0 0px rgba(255, 255, 255, 0)`;
+        this.elements.auroraGradient.style.opacity = 0.0;
+
         this.state.phase = 2;
         
         // Animate cursor to center before locking movement
@@ -291,7 +294,7 @@ class AuroraExperience {
         const animateCursor = () => {
             const dx = targetX - currentX;
             const dy = targetY - currentY;
-            const duration = 1000; // 1 second
+            const duration = 2000; // 1 second
             const steps = 60; // 60 frames
             let step = 0;
             
@@ -333,7 +336,7 @@ class AuroraExperience {
             this.elements.auroraGif.style.opacity = '1';
         }, 100);
 
-        this.elements.cursor.style.opacity = '0.3';
+        this.elements.cursor.style.opacity = '0.35';
 
         // Clean up stars
         this.state.stars.forEach(star => star.element.remove());
