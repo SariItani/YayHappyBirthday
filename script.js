@@ -420,7 +420,7 @@ class AuroraExperience {
 
     startPhase4(choice) {
         this.state.phase = 4;
-        
+        this.state.isMovementLocked = true;
         this.elements.choices.style.display = 'none';
         this.elements.auroraGif.style.opacity = '0';
         this.elements.dialog.style.opacity = '0';
@@ -456,72 +456,75 @@ class AuroraExperience {
         const containerAspect = container.clientWidth / container.clientHeight;
         const gifAspect = metadata.width / metadata.height;
         
-        let displayStrategy = {
+        // Initialize display properties
+        const displayStrategy = {
+            width: '100%',
+            height: '100%',
             objectFit: 'cover',
-            animationDirection: null,
+            transformOrigin: 'center center',
+            initialTransform: 'scale(0.9)',
+            finalTransform: 'scale(0.9)',
+            duration: '20s',
             initialPosition: '50% 50%',
-            finalPosition: '50% 50%',
-            transform: 'none'
+            finalPosition: '50% 50%'
         };
 
-        // If GIF is wider than container (landscape orientation)
+        const SCALE_FACTOR = 0.9; // Scale factor for zoom effect
+        const PAN_PERCENTAGE = 10; // Percentage of movement for panning
+
         if (gifAspect > containerAspect) {
-            // Fit height to screen and pan horizontally
+            // Landscape GIF in container
             displayStrategy.objectFit = 'cover';
-            displayStrategy.animationDirection = 'horizontal';
+            displayStrategy.height = '100%';
             displayStrategy.initialPosition = '0% 50%';
             displayStrategy.finalPosition = '100% 50%';
-        }
-        // If GIF is taller than container (portrait orientation)
-        else if (gifAspect < containerAspect) {
-            // Fit width to screen and pan vertically
+            // Add slight zoom for more dynamic effect
+            displayStrategy.initialTransform = `scale(${SCALE_FACTOR})`;
+            displayStrategy.finalTransform = `scale(${SCALE_FACTOR})`;
+        } else if (gifAspect < containerAspect) {
+            // Portrait GIF in container
             displayStrategy.objectFit = 'cover';
-            displayStrategy.animationDirection = 'vertical';
+            displayStrategy.width = '100%';
             displayStrategy.initialPosition = '50% 0%';
             displayStrategy.finalPosition = '50% 100%';
-        }
-        // If aspects are roughly equal
-        else {
+            displayStrategy.initialTransform = `scale(${SCALE_FACTOR})`;
+            displayStrategy.finalTransform = `scale(${SCALE_FACTOR})`;
+        } else {
+            // Square or near-square GIF
             displayStrategy.objectFit = 'cover';
-            displayStrategy.animationDirection = null;
+            // Add a subtle zoom animation instead of panning
+            displayStrategy.initialTransform = `scale(1)`;
+            displayStrategy.finalTransform = `scale(${SCALE_FACTOR})`;
         }
 
         return displayStrategy;
     }
 
     setupGifAnimation(gifElement, strategy) {
-        // Reset any existing animations and styles
+        // Reset existing styles and transitions
         gifElement.style.transition = 'none';
+        gifElement.style.transform = strategy.initialTransform;
         gifElement.style.objectFit = strategy.objectFit;
         gifElement.style.objectPosition = strategy.initialPosition;
+        gifElement.style.width = strategy.width;
+        gifElement.style.height = strategy.height;
 
         // Force browser reflow
         gifElement.offsetHeight;
 
-        // Apply animation only if needed
-        if (strategy.animationDirection) {
-            // Start the animation
-            setTimeout(() => {
-                gifElement.style.transition = 'object-position 20s linear';
-                gifElement.style.objectPosition = strategy.finalPosition;
-            }, 50);
-        }
+        // Apply animations - only once
+        const transitions = [
+            `transform ${strategy.duration} ease-out`,
+            `object-position ${strategy.duration} linear`
+        ].join(', ');
 
-        // Handle animation end and reset
-        gifElement.addEventListener('transitionend', () => {
-            if (strategy.animationDirection) {
-                // Reset position without animation
-                gifElement.style.transition = 'none';
-                gifElement.style.objectPosition = strategy.initialPosition;
-                
-                // Force browser reflow
-                gifElement.offsetHeight;
-                
-                // Restart animation
-                gifElement.style.transition = 'object-position 20s linear';
-                gifElement.style.objectPosition = strategy.finalPosition;
-            }
-        });
+        setTimeout(() => {
+            gifElement.style.transition = transitions;
+            gifElement.style.transform = strategy.finalTransform;
+            gifElement.style.objectPosition = strategy.finalPosition;
+        }, 50);
+
+        // No more event listener for resetting animation
     }
 
     async playSequence(sequence) {
@@ -534,19 +537,30 @@ class AuroraExperience {
             const gif = sequence.gifs[gifIndex];
             this.elements.phase4Gif.style.opacity = '0';
             
+            // Wait for fade out
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
             // Calculate display strategy before loading new GIF
             const displayStrategy = this.calculateGifDisplay(gif.url);
             
-            // Configure GIF element
-            this.elements.phase4Gif.src = `https://media.giphy.com/media/${gif.url}/giphy.gif`;
-            this.elements.phase4Gif.style.display = 'block';
+            // Update GIF styles
+            Object.assign(this.elements.phase4Gif.style, {
+                display: 'block',
+                opacity: '0',
+                position: 'absolute',
+                inset: '0',
+                width: displayStrategy.width,
+                height: displayStrategy.height,
+                objectFit: displayStrategy.objectFit
+            });
             
-            // Wait for GIF to load
+            // Set source and wait for load
+            this.elements.phase4Gif.src = `https://media.giphy.com/media/${gif.url}/giphy.gif`;
             await new Promise((resolve) => {
                 this.elements.phase4Gif.onload = resolve;
             });
 
-            // Setup animation and fade in
+            // Setup animation (now without looping) and fade in
             this.setupGifAnimation(this.elements.phase4Gif, displayStrategy);
             this.elements.phase4Gif.style.opacity = '1';
 
@@ -584,7 +598,7 @@ class AuroraExperience {
         playNextGif();
         playNextDialogue();
     }
-    
+
     startPhase3() {
         this.state.phase = 3;
         this.elements.choices.style.display = 'block';
