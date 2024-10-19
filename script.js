@@ -98,7 +98,6 @@ class AuroraExperience {
             this.handleMouseMove(e);
         });
     
-        // Handle visibility change
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 this.pauseAllAudio();
@@ -139,24 +138,17 @@ class AuroraExperience {
 
     async init() {
         try {
-            // Show the loading screen but wait for user interaction
             this.showLoadingScreen();
     
-            // Add event listener for the "Start" button
             const startBtn = document.getElementById('start-btn');
             startBtn.addEventListener('click', async () => {
-                // Hide start button after clicking
                 startBtn.style.display = 'none';
-    
-                // Load all assets after the user clicks "Start"
+
                 await this.preloadAssets();
-                
-                // Initialize components
+
                 this.generateStars();
                 this.setupEventListeners();
                 this.setupCursorAnimation();
-                
-                // Hide loading screen and start experience
                 this.hideLoadingScreen();
                 this.startBackgroundMusic();
             });
@@ -167,7 +159,6 @@ class AuroraExperience {
     }
     
     handleError(message) {
-        // Add error handling UI if needed
         console.error(message);
         this.elements.loadingScreen.innerHTML = `
             <div class="loading-content">
@@ -212,19 +203,18 @@ class AuroraExperience {
         } catch (error) {
             console.error('Asset loading error:', error);
             this.handleError('Failed to load necessary assets. Please refresh the page.');
-            throw error; // This will prevent the experience from starting
+            throw error;
         }
     }
 
     generateStars() {
-        const STAR_SIZE = 12; // Size in pixels
+        const STAR_SIZE = 6;
         const starSizePercent = (STAR_SIZE / this.elements.container.clientWidth) * 100;
         
         for (let i = 0; i < this.state.totalStars; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             
-            // Calculate bounds considering star size
             const x = Math.random() * (100 - starSizePercent);
             const y = Math.random() * (100 - starSizePercent);
             
@@ -249,7 +239,6 @@ class AuroraExperience {
             if (playPromise) {
                 playPromise.catch(error => {
                     console.warn('Audio autoplay was prevented:', error);
-                    // Instead of showing a button, we'll handle this during asset loading
                     throw new Error('Audio playback not allowed');
                 });
             }
@@ -269,16 +258,13 @@ class AuroraExperience {
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
     
-                    // Adjusted aura values for better visibility
                     const auraStrength = Math.min(this.state.collectedStars / this.state.totalStars, 1);
-                    const baseRadius = 20; // Base radius in pixels
-                    const maxRadiusIncrease = 160; // Max radius increase based on stars
-                    const baseOpacity = 0.5; // Base opacity for visibility
-                    const maxOpacityIncrease = 1.0; // Max opacity increase to make it shine more
+                    const baseRadius = 20;
+                    const maxRadiusIncrease = 160;
+                    const baseOpacity = 0.5;
+                    const maxOpacityIncrease = 1.0;
     
-                    // Set the box-shadow dynamically based on stars collected
                     this.elements.cursor.style.boxShadow = `0 0 ${baseRadius + auraStrength * maxRadiusIncrease}px rgba(255, 255, 255, ${baseOpacity + auraStrength * maxOpacityIncrease})`;
-    
                     this.elements.auroraGradient.style.opacity = (this.state.collectedStars / this.state.totalStars) * 1.0;
     
                     try {
@@ -302,24 +288,22 @@ class AuroraExperience {
 
         this.state.phase = 2;
         
-        // Animate cursor to center before locking movement
         const currentX = parseFloat(this.elements.cursor.style.left);
         const currentY = parseFloat(this.elements.cursor.style.top);
         const targetX = 50;
         const targetY = 50;
         
-        // Animate cursor movement
         const animateCursor = () => {
             const dx = targetX - currentX;
             const dy = targetY - currentY;
-            const duration = 2000; // 1 second
-            const steps = 60; // 60 frames
+            const duration = 2000;
+            const steps = 60;
             let step = 0;
             
             const animation = setInterval(() => {
                 step++;
                 const progress = step / steps;
-                const easeProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
                 
                 const newX = currentX + dx * easeProgress;
                 const newY = currentY + dy * easeProgress;
@@ -334,20 +318,17 @@ class AuroraExperience {
             }, duration / steps);
         };
 
-        // Start the animation
         animateCursor();
     }
 
     completePhase2Transition() {
         this.state.isMovementLocked = true;
         
-        // Switch music
         this.audio.background.pause();
         this.audio.dialog.loop = true;
-        this.audio.dialog.volume = 0.5;
+        this.audio.dialog.volume = 1.0;
         this.audio.dialog.play().catch(console.error);
 
-        // Visual transitions
         this.elements.auroraGradient.style.display = 'none';
         this.elements.auroraGif.style.display = 'block';
         setTimeout(() => {
@@ -356,10 +337,8 @@ class AuroraExperience {
 
         this.elements.cursor.style.opacity = '0.35';
 
-        // Clean up stars
         this.state.stars.forEach(star => star.element.remove());
         
-        // Show dialog
         this.elements.dialog.style.display = 'block';
         this.showDialogs();
     }
@@ -399,7 +378,6 @@ class AuroraExperience {
     }
 }
 
-// Initialize when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     new AuroraExperience();
 });
