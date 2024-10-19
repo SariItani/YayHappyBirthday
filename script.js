@@ -307,14 +307,33 @@ class AuroraExperience {
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
     
-                    const auraStrength = Math.min(this.state.collectedStars / this.state.totalStars, 1);
-                    const baseRadius = 20;
-                    const maxRadiusIncrease = 160;
-                    const baseOpacity = 0.5;
-                    const maxOpacityIncrease = 1.0;
-    
-                    this.elements.cursor.style.boxShadow = `0 0 ${baseRadius + auraStrength * maxRadiusIncrease}px rgba(255, 255, 255, ${baseOpacity + auraStrength * maxOpacityIncrease})`;
-                    this.elements.auroraGradient.style.opacity = (this.state.collectedStars / this.state.totalStars) * 1.0;
+                    // Enhanced glow calculation
+                    const progress = this.state.collectedStars / this.state.totalStars;
+                    const maxGlow = 200; // Maximum glow radius
+                    const currentGlow = 20 + (maxGlow * progress); // Start with 20px and increase
+                    
+                    // Calculate opacity based on progress
+                    const baseOpacity = 0.8;
+                    const maxOpacityIncrease = 0.2;
+                    const currentOpacity = baseOpacity + (maxOpacityIncrease * progress);
+
+                    // Create multiple layers of glow
+                    const glow = `
+                        0 0 ${currentGlow * 0.4}px rgba(255, 255, 255, ${currentOpacity}),
+                        0 0 ${currentGlow * 0.6}px rgba(255, 255, 255, ${currentOpacity * 0.6}),
+                        0 0 ${currentGlow}px rgba(255, 255, 255, ${currentOpacity * 0.3})
+                    `;
+                    
+                    this.elements.cursor.style.boxShadow = glow;
+                    
+                    // Add temporary pulse effect on star collection
+                    this.elements.cursor.classList.add('pulse');
+                    setTimeout(() => {
+                        this.elements.cursor.classList.remove('pulse');
+                    }, 2000);
+
+                    // Update aurora gradient opacity
+                    this.elements.auroraGradient.style.opacity = progress;
     
                     try {
                         this.audio.eat.currentTime = 0;
@@ -324,6 +343,14 @@ class AuroraExperience {
                     }
     
                     if (this.state.collectedStars === this.state.totalStars) {
+                        // Final glow effect when all stars are collected
+                        const finalGlow = `
+                            0 0 ${maxGlow * 0.5}px rgba(255, 255, 255, 1),
+                            0 0 ${maxGlow * 0.75}px rgba(255, 255, 255, 0.8),
+                            0 0 ${maxGlow}px rgba(255, 255, 255, 0.4)
+                        `;
+                        this.elements.cursor.style.boxShadow = finalGlow;
+                        
                         setTimeout(() => this.startPhase2(), 500);
                     }
                 }

@@ -44,7 +44,37 @@ body, html {
   transform: translate(-50%, -50%);
   pointer-events: none;
   transition: all 0.07s ease;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  /* Enhanced default glow */
+  box-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.8),  /* Inner glow */
+      0 0 30px rgba(255, 255, 255, 0.4),  /* Middle glow */
+      0 0 40px rgba(255, 255, 255, 0.2);  /* Outer glow */
+}
+
+/* Optional: Add a subtle pulse animation to make it more dynamic */
+@keyframes cursorPulse {
+  0% {
+      box-shadow: 
+          0 0 20px rgba(255, 255, 255, 0.8),
+          0 0 30px rgba(255, 255, 255, 0.4),
+          0 0 40px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+      box-shadow: 
+          0 0 25px rgba(255, 255, 255, 0.9),
+          0 0 35px rgba(255, 255, 255, 0.5),
+          0 0 45px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+      box-shadow: 
+          0 0 20px rgba(255, 255, 255, 0.8),
+          0 0 30px rgba(255, 255, 255, 0.4),
+          0 0 40px rgba(255, 255, 255, 0.2);
+  }
+}
+
+#cursor.pulse {
+  animation: cursorPulse 2s infinite;
 }
 
 .star {
