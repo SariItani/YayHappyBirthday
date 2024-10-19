@@ -10,11 +10,11 @@ class AuroraExperience {
                 ],
                 dialogues: [
                     { text: "Each day we thrive to become better...", duration: 4000 },
-                    { text: "We build a temple for ourselves", duration: 5000 },
+                    { text: "We build a temple for ourselves,", duration: 5000 },
                     { text: "A temple of perfection that is ourselves.", duration: 4000 },
                     { text: "Perfection, though, is unhappy...", duration: 3000 },
                     { text: "In our universe which is so manipulated,", duration: 3000 },
-                    { text: "to the point where our lives are simulated!", duration: 4000 },
+                    { text: "To the point where our lives are simulated!", duration: 4000 },
                     { text: "Happiness was never about perfection, pity!", duration: 3000 },
                     { text: "We are happy when we're well and together!", duration: 4000 },
                     { text: "And most importantly...", duration: 2000 },
@@ -32,10 +32,10 @@ class AuroraExperience {
                     { text: "Many lives this world has witnessed...", duration: 3000 },
                     { text: "We preserve them by remembering their legacies.", duration: 5000 },
                     { text: "What is your legacy?", duration: 3000 },
-                    { text: "That which you will be remembered for?", duration: 4000 },
+                    { text: "That which you'll be remembered for?", duration: 4000 },
                     { text: "Here you are today, as perfect as you can get!", duration: 4000 },
                     { text: "And so you live on...", duration: 2000 },
-                    { text: "Your legacy is engraved within us to remember forever.", duration: 6000 }
+                    { text: "Your legacy is engraved within us to be remembered, forever.", duration: 6000 }
                 ]
             }
         };
@@ -87,7 +87,7 @@ class AuroraExperience {
             "And as a result, an aurora appeared at dawn.",
             "The dancing lights in the sky...",
             "Congratulate you and wish you a Meowing Birthday!",
-            "Like what you see?"
+            "Do you wish to proceed?"
         ];
 
         // Initialize after setup
@@ -103,7 +103,7 @@ class AuroraExperience {
 
     hideLoadingScreen() {
         this.elements.dialog.style.display = 'block';
-        this.elements.dialogText.textContent = "Collect all stars";
+        this.elements.dialogText.textContent = "Collect all the stars";
         this.elements.dialogText.style.opacity = '1';
 
         setTimeout(() => {
