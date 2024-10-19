@@ -452,62 +452,78 @@ class AuroraExperience {
         const metadata = this.gifMetadata[gifId];
         const container = this.elements.container;
         
-        const containerAspect = container.clientWidth / container.clientHeight; // Screen aspect ratio
-        const gifAspect = metadata.width / metadata.height; // GIF aspect ratio
+        // Calculate aspect ratios
+        const containerAspect = container.clientWidth / container.clientHeight;
+        const gifAspect = metadata.width / metadata.height;
         
-        let fitStrategy = {
-            objectFit: 'cover',  // Always cover to fill the screen
-            animationDirection: null,  // Animation direction: horizontal or vertical
-            initialPosition: '50%',
-            finalPosition: '50%'
+        let displayStrategy = {
+            objectFit: 'cover',
+            animationDirection: null,
+            initialPosition: '50% 50%',
+            finalPosition: '50% 50%',
+            transform: 'none'
         };
-    
-        // If GIF is wider than the container (landscape)
+
+        // If GIF is wider than container (landscape orientation)
         if (gifAspect > containerAspect) {
-            // Fit by height, and animate horizontally (pan left to right)
-            fitStrategy.animationDirection = 'horizontal';
-            fitStrategy.initialPosition = '0%'; // Start from the left
-            fitStrategy.finalPosition = '100%'; // Pan to the right
-        } 
-        // If GIF is taller than the container (portrait)
-        else if (gifAspect < containerAspect) {
-            // Fit by width, and animate vertically (pan top to bottom)
-            fitStrategy.animationDirection = 'vertical';
-            fitStrategy.initialPosition = '0%'; // Start from the top
-            fitStrategy.finalPosition = '100%'; // Pan to the bottom
+            // Fit height to screen and pan horizontally
+            displayStrategy.objectFit = 'cover';
+            displayStrategy.animationDirection = 'horizontal';
+            displayStrategy.initialPosition = '0% 50%';
+            displayStrategy.finalPosition = '100% 50%';
         }
-    
-        return fitStrategy;
+        // If GIF is taller than container (portrait orientation)
+        else if (gifAspect < containerAspect) {
+            // Fit width to screen and pan vertically
+            displayStrategy.objectFit = 'cover';
+            displayStrategy.animationDirection = 'vertical';
+            displayStrategy.initialPosition = '50% 0%';
+            displayStrategy.finalPosition = '50% 100%';
+        }
+        // If aspects are roughly equal
+        else {
+            displayStrategy.objectFit = 'cover';
+            displayStrategy.animationDirection = null;
+        }
+
+        return displayStrategy;
     }
-    
+
     setupGifAnimation(gifElement, strategy) {
         // Reset any existing animations and styles
         gifElement.style.transition = 'none';
-        gifElement.style.transform = 'none';
-        
-        // Always use object-fit: cover to ensure the GIF fills the screen appropriately
         gifElement.style.objectFit = strategy.objectFit;
-        
-        // Set initial position for the animation
-        if (strategy.animationDirection === 'horizontal') {
-            gifElement.style.objectPosition = `${strategy.initialPosition} 50%`; // Pan horizontally
-        } else if (strategy.animationDirection === 'vertical') {
-            gifElement.style.objectPosition = `50% ${strategy.initialPosition}`; // Pan vertically
-        } else {
-            gifElement.style.objectPosition = '50% 50%'; // No animation needed if GIF fits perfectly
+        gifElement.style.objectPosition = strategy.initialPosition;
+
+        // Force browser reflow
+        gifElement.offsetHeight;
+
+        // Apply animation only if needed
+        if (strategy.animationDirection) {
+            // Start the animation
+            setTimeout(() => {
+                gifElement.style.transition = 'object-position 20s linear';
+                gifElement.style.objectPosition = strategy.finalPosition;
+            }, 50);
         }
-    
-        // Start animation after a short delay to allow for smooth transition
-        setTimeout(() => {
-            gifElement.style.transition = 'object-position 20s linear'; // Control speed of the panning
-            if (strategy.animationDirection === 'horizontal') {
-                gifElement.style.objectPosition = `${strategy.finalPosition} 50%`; // Pan to right
-            } else if (strategy.animationDirection === 'vertical') {
-                gifElement.style.objectPosition = `50% ${strategy.finalPosition}`; // Pan to bottom
+
+        // Handle animation end and reset
+        gifElement.addEventListener('transitionend', () => {
+            if (strategy.animationDirection) {
+                // Reset position without animation
+                gifElement.style.transition = 'none';
+                gifElement.style.objectPosition = strategy.initialPosition;
+                
+                // Force browser reflow
+                gifElement.offsetHeight;
+                
+                // Restart animation
+                gifElement.style.transition = 'object-position 20s linear';
+                gifElement.style.objectPosition = strategy.finalPosition;
             }
-        }, 100); // Start animation after a short delay
+        });
     }
-    
+
     async playSequence(sequence) {
         let gifIndex = 0;
         let dialogueIndex = 0;
@@ -522,7 +538,6 @@ class AuroraExperience {
             const displayStrategy = this.calculateGifDisplay(gif.url);
             
             // Configure GIF element
-            this.elements.phase4Gif.style.objectFit = displayStrategy.objectFit;
             this.elements.phase4Gif.src = `https://media.giphy.com/media/${gif.url}/giphy.gif`;
             this.elements.phase4Gif.style.display = 'block';
             
@@ -545,7 +560,7 @@ class AuroraExperience {
                 }, gif.duration - 1000);
             }
         };
-    
+
         const playNextDialogue = async () => {
             if (dialogueIndex >= sequence.dialogues.length) return;
     
