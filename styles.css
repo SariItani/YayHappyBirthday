@@ -1,36 +1,153 @@
-/* Hide the default cursor */
 body, html {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  background-color: black;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  background: black;
+  position: relative;
   cursor: none;
 }
 
-/* Popup styles */
-.popup {
+#aurora-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #22c55e, #3b82f6, #a855f7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#aurora-gif {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  display: none;
+  transition: opacity 1s ease;
+}
+
+#cursor {
+  position: absolute;
+  width: 12px; /* Increase cursor size */
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Bigger aura */
+}
+
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 1.5s infinite;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+#dialog {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 2rem;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  display: none;
+  width: 80%;
+  max-width: 800px;
+}
+
+#dialog-text {
+  font-size: 2.5rem;
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 0.5s ease;
 }
 
-.visible {
-  opacity: 1;
+#choices {
+  margin-top: 2rem;
+  display: none;
 }
 
-/* Aurora GIF styling - initially hidden */
-.aurora {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.choice-btn {
+  background: none;
+  border: none;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  margin: 0 1rem;
+  cursor: none;
+  transition: color 0.3s;
+}
+
+#yes-btn:hover {
+  color: #22c55e;
+}
+
+#no-btn:hover {
+  color: #dc2626; /* Darker red on hover */
+}
+
+/* Add new styles for loading screen */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.5s ease;
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.progress-container {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+#loading-progress {
+  width: 0;
   height: 100%;
-  object-fit: cover;
-  opacity: 0; /* Hidden initially */
-  transition: opacity 1s ease;
+  background: linear-gradient(90deg, #22c55e, #3b82f6, #a855f7);
+  transition: width 0.3s ease;
+}
+
+.retry-button {
+  background: none;
+  border: 2px solid white;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+  background: white;
+  color: black;
 }

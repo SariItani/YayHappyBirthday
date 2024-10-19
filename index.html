@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Birthday Surprise</title>
-  <link rel="stylesheet" href="styles.css">  <!-- Link to external CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Experience</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <canvas id="space"></canvas> <!-- Canvas for the interactive view -->
-  
-  <div id="popup" class="popup"></div> <!-- Popup dialogues -->
-  
-  <!-- Aurora GIF - Initially hidden, will be revealed as stars are collected -->
-  <img id="aurora" src="aurora.gif" alt="Aurora" class="aurora">
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h2>Loading Aurora Experience</h2>
+            <div class="progress-container">
+                <div id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
 
-  <!-- External JS and libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"></script>
-  <script src="script.js"></script> <!-- Link to external JS file -->
+    <div id="container">
+        <div id="aurora-gradient"></div>
+        <img id="aurora-gif" src="aurora.gif" alt="Aurora animation" />
+        <div id="cursor"></div>
+        <div id="dialog">
+            <p id="dialog-text"></p>
+            <div id="choices">
+                <button id="yes-btn" class="choice-btn">Yes</button>
+                <button id="no-btn" class="choice-btn">No</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
