@@ -257,7 +257,7 @@ class AuroraExperience {
     }
 
     generateStars() {
-        const STAR_SIZE = 6;
+        const STAR_SIZE = 7;
         const starSizePercent = (STAR_SIZE / this.elements.container.clientWidth) * 100;
         
         for (let i = 0; i < this.state.totalStars; i++) {
@@ -454,30 +454,63 @@ class AuroraExperience {
         const container = this.elements.container;
         const containerAspect = container.clientWidth / container.clientHeight;
         const gifAspect = metadata.width / metadata.height;
-
+    
         let fitStrategy = {
-            objectFit: 'contain',
+            objectFit: 'cover',  // Always cover to fill the screen
             animationDirection: null,
             initialPosition: '50%',
             finalPosition: '50%'
         };
-
-        // If GIF is significantly wider than container
-        if (gifAspect > containerAspect * 1.2) {
-            fitStrategy.objectFit = 'cover';
+    
+        // If GIF is wider than container (landscape)
+        if (gifAspect > containerAspect) {
+            // GIF will be taller than container width when fitted, so we pan horizontally
             fitStrategy.animationDirection = 'horizontal';
             fitStrategy.initialPosition = '0%';
             fitStrategy.finalPosition = '100%';
         }
-        // If GIF is significantly taller than container
-        else if (gifAspect < containerAspect * 0.8) {
-            fitStrategy.objectFit = 'cover';
+        // If GIF is taller than container (portrait)
+        else if (gifAspect < containerAspect) {
+            // GIF will be wider than container height when fitted, so we pan vertically
             fitStrategy.animationDirection = 'vertical';
             fitStrategy.initialPosition = '0%';
             fitStrategy.finalPosition = '100%';
         }
-
+    
         return fitStrategy;
+    }
+    
+    setupGifAnimation(gifElement, strategy) {
+        // Reset any existing animations and styles
+        gifElement.style.transition = 'none';
+        gifElement.style.transform = 'none';
+        
+        // Always use object-fit: cover to fill the screen
+        gifElement.style.objectFit = strategy.objectFit;
+        
+        // Reset animation
+        gifElement.style.objectPosition = '50% 50%';
+        
+        if (!strategy.animationDirection) {
+            return;
+        }
+    
+        // Setup initial position
+        if (strategy.animationDirection === 'horizontal') {
+            gifElement.style.objectPosition = `${strategy.initialPosition} 50%`;
+        } else if (strategy.animationDirection === 'vertical') {
+            gifElement.style.objectPosition = `50% ${strategy.initialPosition}`;
+        }
+    
+        // Start animation after a short delay
+        setTimeout(() => {
+            gifElement.style.transition = 'object-position 20s linear';
+            if (strategy.animationDirection === 'horizontal') {
+                gifElement.style.objectPosition = `${strategy.finalPosition} 50%`;
+            } else if (strategy.animationDirection === 'vertical') {
+                gifElement.style.objectPosition = `50% ${strategy.finalPosition}`;
+            }
+        }, 100);
     }
 
     setupGifAnimation(gifElement, strategy) {
