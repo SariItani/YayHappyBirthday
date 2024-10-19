@@ -392,7 +392,6 @@ class AuroraExperience {
         this.showDialogs();
     }
 
-
     showDialogs() {
         const showNextDialog = () => {
             if (this.state.currentDialog < this.dialogs.length - 1) {
@@ -452,29 +451,30 @@ class AuroraExperience {
     calculateGifDisplay(gifId) {
         const metadata = this.gifMetadata[gifId];
         const container = this.elements.container;
-        const containerAspect = container.clientWidth / container.clientHeight;
-        const gifAspect = metadata.width / metadata.height;
-    
+        
+        const containerAspect = container.clientWidth / container.clientHeight; // Screen aspect ratio
+        const gifAspect = metadata.width / metadata.height; // GIF aspect ratio
+        
         let fitStrategy = {
             objectFit: 'cover',  // Always cover to fill the screen
-            animationDirection: null,
+            animationDirection: null,  // Animation direction: horizontal or vertical
             initialPosition: '50%',
             finalPosition: '50%'
         };
     
-        // If GIF is wider than container (landscape)
+        // If GIF is wider than the container (landscape)
         if (gifAspect > containerAspect) {
-            // GIF will be taller than container width when fitted, so we pan horizontally
+            // Fit by height, and animate horizontally (pan left to right)
             fitStrategy.animationDirection = 'horizontal';
-            fitStrategy.initialPosition = '0%';
-            fitStrategy.finalPosition = '100%';
-        }
-        // If GIF is taller than container (portrait)
+            fitStrategy.initialPosition = '0%'; // Start from the left
+            fitStrategy.finalPosition = '100%'; // Pan to the right
+        } 
+        // If GIF is taller than the container (portrait)
         else if (gifAspect < containerAspect) {
-            // GIF will be wider than container height when fitted, so we pan vertically
+            // Fit by width, and animate vertically (pan top to bottom)
             fitStrategy.animationDirection = 'vertical';
-            fitStrategy.initialPosition = '0%';
-            fitStrategy.finalPosition = '100%';
+            fitStrategy.initialPosition = '0%'; // Start from the top
+            fitStrategy.finalPosition = '100%'; // Pan to the bottom
         }
     
         return fitStrategy;
@@ -485,62 +485,29 @@ class AuroraExperience {
         gifElement.style.transition = 'none';
         gifElement.style.transform = 'none';
         
-        // Always use object-fit: cover to fill the screen
+        // Always use object-fit: cover to ensure the GIF fills the screen appropriately
         gifElement.style.objectFit = strategy.objectFit;
         
-        // Reset animation
-        gifElement.style.objectPosition = '50% 50%';
-        
-        if (!strategy.animationDirection) {
-            return;
-        }
-    
-        // Setup initial position
+        // Set initial position for the animation
         if (strategy.animationDirection === 'horizontal') {
-            gifElement.style.objectPosition = `${strategy.initialPosition} 50%`;
+            gifElement.style.objectPosition = `${strategy.initialPosition} 50%`; // Pan horizontally
         } else if (strategy.animationDirection === 'vertical') {
-            gifElement.style.objectPosition = `50% ${strategy.initialPosition}`;
+            gifElement.style.objectPosition = `50% ${strategy.initialPosition}`; // Pan vertically
+        } else {
+            gifElement.style.objectPosition = '50% 50%'; // No animation needed if GIF fits perfectly
         }
     
-        // Start animation after a short delay
+        // Start animation after a short delay to allow for smooth transition
         setTimeout(() => {
-            gifElement.style.transition = 'object-position 20s linear';
+            gifElement.style.transition = 'object-position 20s linear'; // Control speed of the panning
             if (strategy.animationDirection === 'horizontal') {
-                gifElement.style.objectPosition = `${strategy.finalPosition} 50%`;
+                gifElement.style.objectPosition = `${strategy.finalPosition} 50%`; // Pan to right
             } else if (strategy.animationDirection === 'vertical') {
-                gifElement.style.objectPosition = `50% ${strategy.finalPosition}`;
+                gifElement.style.objectPosition = `50% ${strategy.finalPosition}`; // Pan to bottom
             }
-        }, 100);
+        }, 100); // Start animation after a short delay
     }
-
-    setupGifAnimation(gifElement, strategy) {
-        // Reset any existing animations
-        gifElement.style.transition = 'none';
-        gifElement.style.transform = 'none';
-        
-        if (!strategy.animationDirection) {
-            gifElement.style.objectPosition = '50% 50%';
-            return;
-        }
-
-        // Setup initial position
-        if (strategy.animationDirection === 'horizontal') {
-            gifElement.style.objectPosition = `${strategy.initialPosition} 50%`;
-        } else {
-            gifElement.style.objectPosition = `50% ${strategy.initialPosition}`;
-        }
-
-        // Start animation after a short delay
-        setTimeout(() => {
-            gifElement.style.transition = 'object-position 20s linear';
-            if (strategy.animationDirection === 'horizontal') {
-                gifElement.style.objectPosition = `${strategy.finalPosition} 50%`;
-            } else {
-                gifElement.style.objectPosition = `50% ${strategy.finalPosition}`;
-            }
-        }, 100);
-    }
-
+    
     async playSequence(sequence) {
         let gifIndex = 0;
         let dialogueIndex = 0;
