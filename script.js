@@ -52,6 +52,17 @@ class AuroraExperience {
     }
 
     hideLoadingScreen() {
+        this.elements.dialog.style.display = 'block';
+        this.elements.dialogText.textContent = "Collect all stars";
+        this.elements.dialogText.style.opacity = '1';
+
+        setTimeout(() => {
+            this.elements.dialogText.style.opacity = '0';
+            setTimeout(() => {
+                this.elements.dialog.style.display = 'none';
+            }, 500);
+        }, 800);
+
         if (this.elements.loadingScreen) {
             this.elements.loadingScreen.style.opacity = '0';
             setTimeout(() => {
