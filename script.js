@@ -82,20 +82,11 @@ class AuroraExperience {
         }
     }
 
-
     setupEventListeners() {
-        // Throttled mousemove handler
-        let ticking = false;
         this.elements.container.addEventListener('mousemove', (e) => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    this.handleMouseMove(e);
-                    ticking = false;
-                });
-                ticking = true;
-            }
+            this.handleMouseMove(e);
         });
-
+    
         // Handle visibility change
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
@@ -105,7 +96,7 @@ class AuroraExperience {
             }
         });
     }
-
+    
     setupCursorAnimation() {
         this.elements.container.addEventListener('mousemove', (e) => {
             if (this.state.isMovementLocked || this.state.isLoading) return;
@@ -255,7 +246,7 @@ class AuroraExperience {
             if (!star.collected) {
                 const distance = Math.hypot(x - star.x, y - star.y);
 
-                if (distance < 2) {
+                if (distance < 1.5) {
                     star.collected = true;
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
@@ -340,7 +331,7 @@ class AuroraExperience {
             this.elements.auroraGif.style.opacity = '1';
         }, 100);
 
-        this.elements.cursor.style.opacity = '0.2';
+        this.elements.cursor.style.opacity = '0.3';
 
         // Clean up stars
         this.state.stars.forEach(star => star.element.remove());
