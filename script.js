@@ -83,10 +83,10 @@ class AuroraExperience {
         };
 
         this.dialogs = [
-            "Like what you see?",
-            "This is an aurora, it occurs during dawn",
+            "You have collected all the stars",
+            "And as a result, an aurora appeared at dawn!",
             "The dancing lights in the sky...",
-            "What do you think about watching this together someday?"
+            "Like what you see?"
         ];
 
         // Initialize after setup
@@ -448,6 +448,7 @@ class AuroraExperience {
     startPhase4(choice) {
         this.state.phase = 4;
         this.state.isMovementLocked = true;
+        this.elements.cursor.style.display = 'none';
         this.elements.choices.style.display = 'none';
         this.elements.auroraGif.style.opacity = '0';
         this.elements.dialog.style.opacity = '0';
@@ -629,6 +630,7 @@ class AuroraExperience {
     }
 
     startPhase3() {
+        this.elements.cursor.style.boxShadow = `0 0 25px rgba(255, 255, 255, 1)`
         this.state.phase = 3;
         this.elements.choices.style.display = 'block';
         this.state.isMovementLocked = false;
