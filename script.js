@@ -245,29 +245,31 @@ class AuroraExperience {
         this.state.stars.forEach((star, index) => {
             if (!star.collected) {
                 const distance = Math.hypot(x - star.x, y - star.y);
-
+    
                 if (distance < 1.5) {
                     star.collected = true;
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
-
+    
                     // Adjusted aura values for better visibility
                     const auraStrength = Math.min(this.state.collectedStars / this.state.totalStars, 1);
-                    const baseRadius = 20; // Smaller base radius
-                    const maxRadiusIncrease = 40; // Smaller maximum increase
-                    const baseOpacity = 0.8; // Higher base opacity
-                    const maxOpacityIncrease = 0.2; // Smaller opacity increase
-                    
+                    const baseRadius = 20; // Base radius in pixels
+                    const maxRadiusIncrease = 80; // Max radius increase based on stars
+                    const baseOpacity = 0.5; // Base opacity for visibility
+                    const maxOpacityIncrease = 0.5; // Max opacity increase to make it shine more
+    
+                    // Set the box-shadow dynamically based on stars collected
                     this.elements.cursor.style.boxShadow = `0 0 ${baseRadius + auraStrength * maxRadiusIncrease}px rgba(255, 255, 255, ${baseOpacity + auraStrength * maxOpacityIncrease})`;
+    
                     this.elements.auroraGradient.style.opacity = (this.state.collectedStars / this.state.totalStars) * 0.8;
-
+    
                     try {
                         this.audio.eat.currentTime = 0;
                         this.audio.eat.play().catch(console.error);
                     } catch (error) {
                         console.warn('Error playing eat sound:', error);
                     }
-
+    
                     if (this.state.collectedStars === this.state.totalStars) {
                         setTimeout(() => this.startPhase2(), 500);
                     }
@@ -275,7 +277,7 @@ class AuroraExperience {
             }
         });
     }
-
+    
     startPhase2() {
         this.state.phase = 2;
         
