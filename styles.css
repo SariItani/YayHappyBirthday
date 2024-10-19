@@ -35,14 +35,15 @@ body, html {
 
 #cursor {
   position: absolute;
-  width: 12px; /* Increase cursor size */
+  width: 12px;
   height: 12px;
   background: white;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Bigger aura */
+  /* Add smooth transitions for position */
+  transition: left 0.1s ease-out, top 0.1s ease-out;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
 }
 
 .star {

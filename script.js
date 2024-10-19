@@ -107,26 +107,18 @@ class AuroraExperience {
     }
 
     setupCursorAnimation() {
-        let animationFrameId;
-        const animate = () => {
-            if (!this.state.isMovementLocked) {
-                const dx = this.state.lastMouseX - parseFloat(this.elements.cursor.style.left || 0);
-                const dy = this.state.lastMouseY - parseFloat(this.elements.cursor.style.top || 0);
-                
-                // Smooth interpolation
-                this.elements.cursor.style.left = `${parseFloat(this.elements.cursor.style.left || 0) + dx * 0.2}%`;
-                this.elements.cursor.style.top = `${parseFloat(this.elements.cursor.style.top || 0) + dy * 0.2}%`;
-            }
-            animationFrameId = requestAnimationFrame(animate);
-        };
-        animate();
-
-        // Cleanup on window unload
-        window.addEventListener('unload', () => {
-            cancelAnimationFrame(animationFrameId);
+        this.elements.container.addEventListener('mousemove', (e) => {
+            if (this.state.isMovementLocked || this.state.isLoading) return;
+    
+            const rect = this.elements.container.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+            this.elements.cursor.style.left = `${x}%`;
+            this.elements.cursor.style.top = `${y}%`;
         });
     }
-
+    
     pauseAllAudio() {
         Object.values(this.audio).forEach(audio => {
             if (!audio.paused) {
@@ -263,7 +255,7 @@ class AuroraExperience {
             if (!star.collected) {
                 const distance = Math.hypot(x - star.x, y - star.y);
 
-                if (distance < 5) {
+                if (distance < 2) {
                     star.collected = true;
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
