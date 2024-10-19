@@ -4,23 +4,23 @@ class AuroraExperience {
         this.sequences = {
             yes: {
                 gifs: [
-                    { url: "10GVNnqO2ZoAh2", duration: 12000 },
+                    { url: "10GVNnqO2ZoAh2", duration: 14000 },
                     { url: "l0MYvHoZeo043Gf9S", duration: 14000 },
                     { url: "pI43YlhMoPqsE", duration: null }
                 ],
                 dialogues: [
                     { text: "Each day we thrive to become better...", duration: 4000 },
-                    { text: "We are building a temple for ourselves", duration: 3000 },
-                    { text: "A temple of perfections that is ourselves.", duration: 4000 },
-                    { text: "Perfection though is unhappy!", duration: 3000 },
-                    { text: "In our universe which is manipulated", duration: 3000 },
-                    { text: "to the point where our lives are simulated...", duration: 4000 },
+                    { text: "We build a temple for ourselves", duration: 5000 },
+                    { text: "A temple of perfection that is ourselves.", duration: 4000 },
+                    { text: "Perfection, though, is unhappy...", duration: 3000 },
+                    { text: "In our universe which is so manipulated,", duration: 3000 },
+                    { text: "to the point where our lives are simulated!", duration: 4000 },
                     { text: "Happiness was never about perfection, pity!", duration: 3000 },
-                    { text: "We are happy when we're well and together", duration: 4000 },
-                    { text: "and most importantly...", duration: 2000 },
-                    { text: "having something to live for", duration: 5000 },
-                    { text: "and to love the entire universe", duration: 3000 },
-                    { text: "we love and are kind to ourselves", duration: 7000 }
+                    { text: "We are happy when we're well and together!", duration: 4000 },
+                    { text: "And most importantly...", duration: 2000 },
+                    { text: "When we have something to live for.", duration: 5000 },
+                    { text: "And to love the entire universe,", duration: 3000 },
+                    { text: "We must be kind to ourselves...", duration: 7000 }
                 ]
             },
             no: {
@@ -29,11 +29,11 @@ class AuroraExperience {
                     { url: "9LZTcawH3mc8V2oUqk", duration: null }
                 ],
                 dialogues: [
-                    { text: "Many lives this world has witnessed", duration: 3000 },
-                    { text: "We preserve them by remembering their legacies", duration: 5000 },
-                    { text: "What is your legacy", duration: 3000 },
+                    { text: "Many lives this world has witnessed...", duration: 3000 },
+                    { text: "We preserve them by remembering their legacies.", duration: 5000 },
+                    { text: "What is your legacy?", duration: 3000 },
                     { text: "That which you will be remembered for?", duration: 4000 },
-                    { text: "Here you are today, as perfect as you can get", duration: 4000 },
+                    { text: "Here you are today, as perfect as you can get!", duration: 4000 },
                     { text: "And so you live on...", duration: 2000 },
                     { text: "Your legacy is engraved within us to remember forever.", duration: 6000 }
                 ]
@@ -84,8 +84,9 @@ class AuroraExperience {
 
         this.dialogs = [
             "You have collected all the stars",
-            "And as a result, an aurora appeared at dawn!",
+            "And as a result, an aurora appeared at dawn.",
             "The dancing lights in the sky...",
+            "Congratulate you and wish you a Meowing Birthday!",
             "Like what you see?"
         ];
 
@@ -600,8 +601,8 @@ class AuroraExperience {
                     setTimeout(() => {
                         gifIndex++;
                         playNextGif();
-                    }, 1000);
-                }, gif.duration - 1000);
+                    }, 600);
+                }, gif.duration - 500);
             }
         };
 
