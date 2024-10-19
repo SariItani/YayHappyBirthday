@@ -104,6 +104,21 @@ body, html {
 }
 
 /* Add new styles for loading screen */
+#start-btn {
+  background: white;
+  border: none;
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.08s ease;
+}
+
+#start-btn:hover {
+  background: linear-gradient(90deg, #22c55e, #3b82f6, #a855f7);
+  color: rgb(255, 255, 255);
+}
+
 #loading-screen {
   position: fixed;
   inset: 0;

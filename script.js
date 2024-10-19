@@ -128,26 +128,33 @@ class AuroraExperience {
 
     async init() {
         try {
-            // Show loading screen
+            // Show the loading screen but wait for user interaction
             this.showLoadingScreen();
-            
-            // Load all assets
-            await this.preloadAssets();
-            
-            // Initialize components
-            this.generateStars();
-            this.setupEventListeners();
-            this.setupCursorAnimation();
-            
-            // Hide loading screen and start experience
-            this.hideLoadingScreen();
-            this.startBackgroundMusic();
+    
+            // Add event listener for the "Start" button
+            const startBtn = document.getElementById('start-btn');
+            startBtn.addEventListener('click', async () => {
+                // Hide start button after clicking
+                startBtn.style.display = 'none';
+    
+                // Load all assets after the user clicks "Start"
+                await this.preloadAssets();
+                
+                // Initialize components
+                this.generateStars();
+                this.setupEventListeners();
+                this.setupCursorAnimation();
+                
+                // Hide loading screen and start experience
+                this.hideLoadingScreen();
+                this.startBackgroundMusic();
+            });
         } catch (error) {
             console.error('Initialization error:', error);
             this.handleError('Failed to initialize experience');
         }
     }
-
+    
     handleError(message) {
         // Add error handling UI if needed
         console.error(message);
