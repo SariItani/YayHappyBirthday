@@ -64,7 +64,7 @@ body, html {
 
 #dialog {
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
@@ -187,10 +187,10 @@ body, html {
 #phase4-dialog {
   position: absolute;
   top: 5%;
-  left: 5%;
+  left: 10%;
   color: white;
   font-family: Arial, sans-serif;
-  font-size: 2.5rem;
+  font-size: 3rem;
   text-align: left;
   opacity: 0;
   transition: opacity 0.5s ease;

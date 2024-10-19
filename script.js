@@ -432,7 +432,7 @@ class AuroraExperience {
     
         this.audio.dialog.pause();
         this.audio.theme.loop = true;
-        this.audio.theme.volume = 0.7;
+        this.audio.theme.volume = 1.0;
         this.audio.theme.play().catch(console.error);
     
         if (!this.elements.phase4Dialog) {
@@ -493,7 +493,7 @@ class AuroraExperience {
             // Square or near-square GIF
             displayStrategy.objectFit = 'cover';
             // Add a subtle zoom animation instead of panning
-            displayStrategy.initialTransform = `scale(1)`;
+            displayStrategy.initialTransform = `scale(${SCALE_FACTOR})`;
             displayStrategy.finalTransform = `scale(${SCALE_FACTOR})`;
         }
 
@@ -538,7 +538,9 @@ class AuroraExperience {
             this.elements.phase4Gif.style.opacity = '0';
             
             // Wait for fade out
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (gifIndex > 0) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
             
             // Calculate display strategy before loading new GIF
             const displayStrategy = this.calculateGifDisplay(gif.url);
