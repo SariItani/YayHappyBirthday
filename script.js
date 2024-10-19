@@ -86,8 +86,9 @@ class AuroraExperience {
             "You have collected all the stars",
             "And as a result, an aurora appeared at dawn.",
             "The dancing lights in the sky...",
-            "Congratulate you and wish you a Meowing Birthday!",
-            "Do you wish to proceed?"
+            "Congratulate you, and wish you a Meowing Birthday!",
+            "Make a wish right now!",
+            "Now think, do you want to change something this year?"
         ];
 
         // Initialize after setup
