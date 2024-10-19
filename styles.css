@@ -49,8 +49,8 @@ body, html {
 
 .star {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   background: white;
   border-radius: 50%;
   animation: twinkle 1.5s infinite;

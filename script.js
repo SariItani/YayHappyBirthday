@@ -25,7 +25,7 @@ class AuroraExperience {
             phase: 1,
             stars: [],
             collectedStars: 0,
-            totalStars: 15,
+            totalStars: 30,
             currentDialog: 0,
             isMovementLocked: false,
             lastMouseX: 0,
