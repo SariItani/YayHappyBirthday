@@ -19,7 +19,7 @@ body, html {
   inset: 0;
   background: linear-gradient(to top, #22c55e, #3b82f6, #a855f7);
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.15s ease;
 }
 
 #aurora-gif {
@@ -103,10 +103,10 @@ body, html {
 }
 
 #no-btn:hover {
-  color: #dc2626; /* Darker red on hover */
+  color: #dc2626;
 }
 
-/* Add new styles for loading screen */
+/* Loading screen */
 #start-btn {
   background: white;
   border: none;
