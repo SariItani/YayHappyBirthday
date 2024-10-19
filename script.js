@@ -1,5 +1,53 @@
 class AuroraExperience {
     constructor() {
+        
+        this.sequences = {
+            yes: {
+                gifs: [
+                    { url: "10GVNnqO2ZoAh2", duration: 12000 },
+                    { url: "l0MYvHoZeo043Gf9S", duration: 14000 },
+                    { url: "pI43YlhMoPqsE", duration: null }
+                ],
+                dialogues: [
+                    { text: "Each day we thrive to become better...", duration: 4000 },
+                    { text: "We are building a temple for ourselves", duration: 3000 },
+                    { text: "A temple of perfections that is ourselves.", duration: 4000 },
+                    { text: "Perfection though is unhappy!", duration: 3000 },
+                    { text: "In our universe which is manipulated", duration: 3000 },
+                    { text: "to the point where our lives are simulated...", duration: 4000 },
+                    { text: "Happiness was never about perfection, pity!", duration: 3000 },
+                    { text: "We are happy when we're well and together", duration: 4000 },
+                    { text: "and most importantly...", duration: 2000 },
+                    { text: "having something to live for", duration: 5000 },
+                    { text: "and to love the entire universe", duration: 3000 },
+                    { text: "we love and are kind to ourselves", duration: 7000 }
+                ]
+            },
+            no: {
+                gifs: [
+                    { url: "TRebCjNbc4dIA", duration: 14000 },
+                    { url: "9LZTcawH3mc8V2oUqk", duration: null }
+                ],
+                dialogues: [
+                    { text: "Many lives this world has witnessed", duration: 3000 },
+                    { text: "We preserve them by remembering their legacies", duration: 5000 },
+                    { text: "What is your legacy", duration: 3000 },
+                    { text: "That which you will be remembered for?", duration: 4000 },
+                    { text: "Here you are today, as perfect as you can get", duration: 4000 },
+                    { text: "And so you live on...", duration: 2000 },
+                    { text: "Your legacy is engraved within us to remember forever.", duration: 6000 }
+                ]
+            }
+        };
+        
+        this.gifMetadata = {
+            '10GVNnqO2ZoAh2': { width: 287, height: 480 },  // vertical
+            'l0MYvHoZeo043Gf9S': { width: 480, height: 480 },  // square
+            'pI43YlhMoPqsE': { width: 344, height: 480 },  // vertical
+            'TRebCjNbc4dIA': { width: 480, height: 458 },  // almost square
+            '9LZTcawH3mc8V2oUqk': { width: 480, height: 336 }  // horizontal
+        };
+        
         // Store DOM references
         this.elements = {
             container: document.getElementById('container'),
@@ -17,7 +65,8 @@ class AuroraExperience {
         this.audio = {
             background: new Audio('background-music.mp3'),
             dialog: new Audio('dialog-music.mp3'),
-            eat: new Audio('eat-sound.mp3')
+            eat: new Audio('eat-sound.mp3'),
+            theme: new Audio('theme.mp3')
         };
 
         // State management
@@ -370,11 +419,178 @@ class AuroraExperience {
         }, 500);
     }
 
+    startPhase4(choice) {
+        this.state.phase = 4;
+        
+        this.elements.choices.style.display = 'none';
+        this.elements.auroraGif.style.opacity = '0';
+        this.elements.dialog.style.opacity = '0';
+        
+        setTimeout(() => {
+            this.elements.auroraGif.style.display = 'none';
+            this.elements.dialog.style.display = 'none';
+        }, 1000);
+    
+        this.audio.dialog.pause();
+        this.audio.theme.loop = true;
+        this.audio.theme.volume = 0.7;
+        this.audio.theme.play().catch(console.error);
+    
+        if (!this.elements.phase4Dialog) {
+            this.elements.phase4Dialog = document.createElement('div');
+            this.elements.phase4Dialog.id = 'phase4-dialog';
+            this.elements.container.appendChild(this.elements.phase4Dialog);
+            
+            this.elements.phase4Gif = document.createElement('img');
+            this.elements.phase4Gif.id = 'phase4-gif';
+            this.elements.container.appendChild(this.elements.phase4Gif);
+        }
+    
+        this.playSequence(this.sequences[choice]);
+    }
+    
+    calculateGifDisplay(gifId) {
+        const metadata = this.gifMetadata[gifId];
+        const container = this.elements.container;
+        const containerAspect = container.clientWidth / container.clientHeight;
+        const gifAspect = metadata.width / metadata.height;
+
+        let fitStrategy = {
+            objectFit: 'contain',
+            animationDirection: null,
+            initialPosition: '50%',
+            finalPosition: '50%'
+        };
+
+        // If GIF is significantly wider than container
+        if (gifAspect > containerAspect * 1.2) {
+            fitStrategy.objectFit = 'cover';
+            fitStrategy.animationDirection = 'horizontal';
+            fitStrategy.initialPosition = '0%';
+            fitStrategy.finalPosition = '100%';
+        }
+        // If GIF is significantly taller than container
+        else if (gifAspect < containerAspect * 0.8) {
+            fitStrategy.objectFit = 'cover';
+            fitStrategy.animationDirection = 'vertical';
+            fitStrategy.initialPosition = '0%';
+            fitStrategy.finalPosition = '100%';
+        }
+
+        return fitStrategy;
+    }
+
+    setupGifAnimation(gifElement, strategy) {
+        // Reset any existing animations
+        gifElement.style.transition = 'none';
+        gifElement.style.transform = 'none';
+        
+        if (!strategy.animationDirection) {
+            gifElement.style.objectPosition = '50% 50%';
+            return;
+        }
+
+        // Setup initial position
+        if (strategy.animationDirection === 'horizontal') {
+            gifElement.style.objectPosition = `${strategy.initialPosition} 50%`;
+        } else {
+            gifElement.style.objectPosition = `50% ${strategy.initialPosition}`;
+        }
+
+        // Start animation after a short delay
+        setTimeout(() => {
+            gifElement.style.transition = 'object-position 20s linear';
+            if (strategy.animationDirection === 'horizontal') {
+                gifElement.style.objectPosition = `${strategy.finalPosition} 50%`;
+            } else {
+                gifElement.style.objectPosition = `50% ${strategy.finalPosition}`;
+            }
+        }, 100);
+    }
+
+    async playSequence(sequence) {
+        let gifIndex = 0;
+        let dialogueIndex = 0;
+
+        const playNextGif = async () => {
+            if (gifIndex >= sequence.gifs.length) return;
+
+            const gif = sequence.gifs[gifIndex];
+            this.elements.phase4Gif.style.opacity = '0';
+            
+            // Calculate display strategy before loading new GIF
+            const displayStrategy = this.calculateGifDisplay(gif.url);
+            
+            // Configure GIF element
+            this.elements.phase4Gif.style.objectFit = displayStrategy.objectFit;
+            this.elements.phase4Gif.src = `https://media.giphy.com/media/${gif.url}/giphy.gif`;
+            this.elements.phase4Gif.style.display = 'block';
+            
+            // Wait for GIF to load
+            await new Promise((resolve) => {
+                this.elements.phase4Gif.onload = resolve;
+            });
+
+            // Setup animation and fade in
+            this.setupGifAnimation(this.elements.phase4Gif, displayStrategy);
+            this.elements.phase4Gif.style.opacity = '1';
+
+            if (gif.duration !== null) {
+                setTimeout(() => {
+                    this.elements.phase4Gif.style.opacity = '0';
+                    setTimeout(() => {
+                        gifIndex++;
+                        playNextGif();
+                    }, 1000);
+                }, gif.duration - 1000);
+            }
+        };
+    
+        const playNextDialogue = async () => {
+            if (dialogueIndex >= sequence.dialogues.length) return;
+    
+            const dialogue = sequence.dialogues[dialogueIndex];
+            
+            this.elements.phase4Dialog.style.opacity = '0';
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            this.elements.phase4Dialog.textContent = dialogue.text;
+            this.elements.phase4Dialog.style.opacity = '1';
+    
+            setTimeout(() => {
+                this.elements.phase4Dialog.style.opacity = '0';
+                setTimeout(() => {
+                    dialogueIndex++;
+                    playNextDialogue();
+                }, 500);
+            }, dialogue.duration - 500);
+        };
+    
+        playNextGif();
+        playNextDialogue();
+    }
+    
     startPhase3() {
         this.state.phase = 3;
         this.elements.choices.style.display = 'block';
         this.state.isMovementLocked = false;
         this.elements.cursor.style.opacity = '1.0';
+    
+        const yesBtn = document.createElement('button');
+        yesBtn.textContent = 'Yes';
+        yesBtn.className = 'choice-btn';
+        yesBtn.id = 'yes-btn';
+        yesBtn.onclick = () => this.startPhase4('yes');
+    
+        const noBtn = document.createElement('button');
+        noBtn.textContent = 'No';
+        noBtn.className = 'choice-btn';
+        noBtn.id = 'no-btn';
+        noBtn.onclick = () => this.startPhase4('no');
+    
+        this.elements.choices.innerHTML = '';
+        this.elements.choices.appendChild(yesBtn);
+        this.elements.choices.appendChild(noBtn);
     }
 }
 
