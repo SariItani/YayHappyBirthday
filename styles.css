@@ -150,11 +150,13 @@ body, html {
   transition: color 0.3s;
 }
 
-#yes-btn:hover {
+#yes-btn:hover, 
+#yes-btn:active{
   color: #22c55e;
 }
 
-#no-btn:hover {
+#no-btn:hover,
+#no-btn:active {
   color: #dc2626;
 }
 
@@ -169,7 +171,8 @@ body, html {
   transition: all 0.08s ease;
 }
 
-#start-btn:hover {
+#start-btn:hover,
+#start-btn:active {
   background: linear-gradient(90deg, #22c55e, #3b82f6, #a855f7);
   color: rgb(255, 255, 255);
 }
@@ -217,7 +220,8 @@ body, html {
   transition: all 0.3s ease;
 }
 
-.retry-button:hover {
+.retry-button:hover, 
+.retry-button:active {
   background: white;
   color: black;
 }
