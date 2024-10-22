@@ -678,23 +678,25 @@ class AuroraExperience {
         this.elements.choices.style.display = 'block';
         this.state.isMovementLocked = false;
         this.elements.cursor.style.opacity = '1.0';
-    
+        
         const yesBtn = document.createElement('button');
         yesBtn.textContent = 'Yes';
         yesBtn.className = 'choice-btn';
         yesBtn.id = 'yes-btn';
         yesBtn.onclick = () => this.startPhase4('yes');
+        yesBtn.addEventListener('touchstart', () => this.startPhase4('yes')); // Add touch support
     
         const noBtn = document.createElement('button');
         noBtn.textContent = 'No';
         noBtn.className = 'choice-btn';
         noBtn.id = 'no-btn';
         noBtn.onclick = () => this.startPhase4('no');
-    
+        noBtn.addEventListener('touchstart', () => this.startPhase4('no')); // Add touch support
+        
         this.elements.choices.innerHTML = '';
         this.elements.choices.appendChild(yesBtn);
         this.elements.choices.appendChild(noBtn);
-    }
+    }    
 }
 
 document.addEventListener('DOMContentLoaded', () => {
