@@ -79,7 +79,8 @@ class AuroraExperience {
             isMovementLocked: false,
             lastMouseX: 0,
             lastMouseY: 0,
-            isLoading: true
+            isLoading: true,
+            isTouching: false
         };
 
         this.dialogs = [
@@ -145,10 +146,31 @@ class AuroraExperience {
     }
 
     setupEventListeners() {
+        // Mouse movement handler
         this.elements.container.addEventListener('mousemove', (e) => {
+            if (this.state.isMovementLocked || this.state.isLoading || this.state.isTouching) return;
             this.handleMouseMove(e);
         });
     
+        // Touch event handlers
+        this.elements.container.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.state.isTouching = true;
+            this.handleTouchMove(e);
+        }, { passive: false });
+
+        this.elements.container.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (this.state.isTouching) {
+                this.handleTouchMove(e);
+            }
+        }, { passive: false });
+
+        this.elements.container.addEventListener('touchend', () => {
+            this.state.isTouching = false;
+        });
+    
+        // Audio
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 this.pauseAllAudio();
@@ -158,9 +180,28 @@ class AuroraExperience {
         });
     }
     
+    handleTouchMove(e) {
+        if (this.state.isLoading || this.state.isMovementLocked) return;
+
+        const touch = e.touches[0];
+        const rect = this.elements.container.getBoundingClientRect();
+        const x = ((touch.clientX - rect.left) / rect.width) * 100;
+        const y = ((touch.clientY - rect.top) / rect.height) * 100;
+
+        this.state.lastMouseX = x;
+        this.state.lastMouseY = y;
+        
+        this.elements.cursor.style.left = `${x}%`;
+        this.elements.cursor.style.top = `${y}%`;
+        
+        if (this.state.phase === 1) {
+            this.checkStarCollection(x, y);
+        }
+    }
+    
     setupCursorAnimation() {
         this.elements.container.addEventListener('mousemove', (e) => {
-            if (this.state.isMovementLocked || this.state.isLoading) return;
+            if (this.state.isMovementLocked || this.state.isLoading || this.state.isTouching) return;
     
             const rect = this.elements.container.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * 100;
