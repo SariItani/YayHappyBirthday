@@ -406,6 +406,8 @@ class AuroraExperience {
         this.elements.auroraGradient.style.opacity = 0.0;
 
         this.state.phase = 2;
+
+        this.state.isMovementLocked = true;
         
         const currentX = parseFloat(this.elements.cursor.style.left);
         const currentY = parseFloat(this.elements.cursor.style.top);
