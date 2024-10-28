@@ -6,7 +6,7 @@ class AuroraExperience {
                 gifs: [
                     { url: "10GVNnqO2ZoAh2", duration: 14000 },
                     { url: "l0MYvHoZeo043Gf9S", duration: 14000 },
-                    { url: "pI43YlhMoPqsE", duration: 25000 },
+                    { url: "pI43YlhMoPqsE", duration: 24000 },
                     { url: "assets/peach_goma_birthday.gif", duration: null }
                 ],
                 dialogues: [
