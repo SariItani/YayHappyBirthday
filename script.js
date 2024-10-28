@@ -352,67 +352,85 @@ class AuroraExperience {
         }
     }
 
-    checkStarCollection(x, y) {
-        this.state.stars.forEach((star, index) => {
-            if (!star.collected) {
-                const distance = Math.hypot(x - star.x, y - star.y);
+    checkStarCollection() {
+        // Get cursor's current position and radius
+        const cursorRect = this.elements.cursor.getBoundingClientRect();
+        const cursorX = (cursorRect.left + cursorRect.right) / 2; // Center X
+        const cursorY = (cursorRect.top + cursorRect.bottom) / 2; // Center Y
+        const cursorRadius = cursorRect.width / 2;
     
-                if (distance < 1.8) {
+        // Check for collisions with each star
+        this.state.stars.forEach((star) => {
+            if (!star.collected) {
+                const starRect = star.element.getBoundingClientRect();
+                const starX = (starRect.left + starRect.right) / 2; // Star center X
+                const starY = (starRect.top + starRect.bottom) / 2; // Star center Y
+                const starRadius = starRect.width / 2;
+    
+                // Calculate distance between cursor and star centers
+                const distance = Math.hypot(cursorX - starX, cursorY - starY);
+    
+                // Trigger collision if distance is within combined radii
+                if (distance <= cursorRadius + starRadius) {
                     star.collected = true;
                     star.element.style.display = 'none';
                     this.state.collectedStars++;
     
-                    // Enhanced glow calculation
+                    // Update cursor's glow and background brightness based on progress
                     const progress = this.state.collectedStars / this.state.totalStars;
-                    const maxGlow = 200; // Maximum glow radius
-                    const currentGlow = 20 + (maxGlow * progress); // Start with 20px and increase
-                    
-                    // Calculate opacity based on progress
-                    const baseOpacity = 0.8;
-                    const maxOpacityIncrease = 0.2;
-                    const currentOpacity = baseOpacity + (maxOpacityIncrease * progress);
-
-                    // Create multiple layers of glow
-                    const glow = `
-                        0 0 ${currentGlow * 0.4}px rgba(255, 255, 255, ${currentOpacity}),
-                        0 0 ${currentGlow * 0.6}px rgba(255, 255, 255, ${currentOpacity * 0.6}),
-                        0 0 ${currentGlow}px rgba(255, 255, 255, ${currentOpacity * 0.3})
-                    `;
-                    
-                    this.elements.cursor.style.boxShadow = glow;
-                    
-                    // Add temporary pulse effect on star collection
-                    this.elements.cursor.classList.add('pulse');
-                    setTimeout(() => {
-                        this.elements.cursor.classList.remove('pulse');
-                    }, 2000);
-
-                    // Update aurora gradient opacity
-                    this.elements.auroraGradient.style.opacity = progress;
+                    this.updateCursorGlow(progress);
+                    this.updateBackgroundBrightness(progress);
     
-                    try {
-                        this.audio.eat.currentTime = 0;
-                        this.audio.eat.volume = 0.5;
-                        this.audio.eat.play().catch(console.error);
-                    } catch (error) {
-                        console.warn('Error playing eat sound:', error);
-                    }
+                    // Play 'eat' sound effect
+                    this.playEatSound();
     
+                    // Check if all stars are collected to transition to the next phase
                     if (this.state.collectedStars === this.state.totalStars) {
-                        // Final glow effect when all stars are collected
-                        const finalGlow = `
-                            0 0 ${maxGlow * 0.5}px rgba(255, 255, 255, 1),
-                            0 0 ${maxGlow * 0.75}px rgba(255, 255, 255, 0.8),
-                            0 0 ${maxGlow}px rgba(255, 255, 255, 0.4)
-                        `;
-                        this.elements.cursor.style.boxShadow = finalGlow;
-                        
+                        this.triggerFinalGlow();
                         setTimeout(() => this.startPhase2(), 500);
                     }
                 }
             }
         });
+    }    
+
+    updateCursorGlow(progress) {
+        const maxGlow = 200;
+        const currentGlow = 20 + (maxGlow * progress);
+        const baseOpacity = 0.8;
+        const maxOpacityIncrease = 0.2;
+        const currentOpacity = baseOpacity + (maxOpacityIncrease * progress);
+    
+        this.elements.cursor.style.boxShadow = `
+            0 0 ${currentGlow * 0.4}px rgba(255, 255, 255, ${currentOpacity}),
+            0 0 ${currentGlow * 0.6}px rgba(255, 255, 255, ${currentOpacity * 0.6}),
+            0 0 ${currentGlow}px rgba(255, 255, 255, ${currentOpacity * 0.3})
+        `;
     }
+    
+    updateBackgroundBrightness(progress) {
+        // Update the background gradient opacity based on the progress
+        this.elements.auroraGradient.style.opacity = progress;
+    }
+    
+    playEatSound() {
+        try {
+            this.audio.eat.currentTime = 0;
+            this.audio.eat.volume = 0.5;
+            this.audio.eat.play().catch(console.error);
+        } catch (error) {
+            console.warn('Error playing eat sound:', error);
+        }
+    }
+    
+    triggerFinalGlow() {
+        const finalGlow = `
+            0 0 ${200 * 0.5}px rgba(255, 255, 255, 1),
+            0 0 ${200 * 0.75}px rgba(255, 255, 255, 0.8),
+            0 0 ${200}px rgba(255, 255, 255, 0.4)
+        `;
+        this.elements.cursor.style.boxShadow = finalGlow;
+    }    
     
     startPhase2() {
         this.elements.cursor.style.boxShadow = `0 0 0px rgba(255, 255, 255, 0)`;
