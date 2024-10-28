@@ -57,7 +57,7 @@ body, html {
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  transition: all 0.07s ease;
+  transition: all 0.055s ease;
   /* Enhanced default glow */
   box-shadow: 
       0 0 20px rgba(255, 255, 255, 0.8),  /* Inner glow */

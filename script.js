@@ -622,7 +622,7 @@ class AuroraExperience {
             
             // Wait for fade out
             if (gifIndex > 0) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
             
             // Calculate display strategy before loading new GIF
