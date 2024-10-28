@@ -385,6 +385,7 @@ class AuroraExperience {
     
                     try {
                         this.audio.eat.currentTime = 0;
+                        this.audio.eat.volume = 0.5;
                         this.audio.eat.play().catch(console.error);
                     } catch (error) {
                         console.warn('Error playing eat sound:', error);
@@ -510,7 +511,7 @@ class AuroraExperience {
     
         this.audio.dialog.pause();
         this.audio.theme.loop = true;
-        this.audio.theme.volume = 1.0;
+        this.audio.theme.volume = 1.2;
         this.audio.theme.play().catch(console.error);
     
         if (!this.elements.phase4Dialog) {
