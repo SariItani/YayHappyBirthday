@@ -218,18 +218,22 @@ class AuroraExperience {
     }
     
     pauseAllAudio() {
+        this.activeAudios = []; // Track audios that were playing
+    
         Object.values(this.audio).forEach(audio => {
             if (!audio.paused) {
+                this.activeAudios.push(audio); // Store playing audios
                 audio.pause();
             }
         });
     }
-
+    
     resumeAudio() {
-        if (this.state.phase === 1) {
-            this.audio.background.play().catch(console.error);
-        } else if (this.state.phase === 2) {
-            this.audio.dialog.play().catch(console.error);
+        if (this.activeAudios && this.activeAudios.length > 0) {
+            this.activeAudios.forEach(audio => {
+                audio.play().catch(console.error);
+            });
+            this.activeAudios = []; // Clear active audio list after resuming
         }
     }
 
