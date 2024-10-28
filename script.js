@@ -28,7 +28,7 @@ class AuroraExperience {
             no: {
                 gifs: [
                     { url: "TRebCjNbc4dIA", duration: 14000 },
-                    { url: "9LZTcawH3mc8V2oUqk", duration: 35000 },
+                    { url: "9LZTcawH3mc8V2oUqk", duration: 32000 },
                     { url: "assets/peach_birthday.gif", duration: null }
                 ],
                 dialogues: [
