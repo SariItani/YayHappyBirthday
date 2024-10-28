@@ -29,7 +29,7 @@ class AuroraExperience {
                 gifs: [
                     { url: "TRebCjNbc4dIA", duration: 14000 },
                     { url: "9LZTcawH3mc8V2oUqk", duration: 32000 },
-                    { url: "assets/peach_birthday.gif", duration: null }
+                    { url: "assets/peach_goma_birthday.gif", duration: null }
                 ],
                 dialogues: [
                     { text: "Many lives this world has witnessed...", duration: 3000 },
@@ -54,7 +54,7 @@ class AuroraExperience {
             'TRebCjNbc4dIA': { width: 480, height: 458 },  // almost square
             '9LZTcawH3mc8V2oUqk': { width: 480, height: 336 },  // horizontal
             'assets/peach_birthday.gif': { width: 180, height: 176 },  // horizontal
-            'assets/peach_goma_birthday.gif': { width: 260, height: 260 }  // horizontal
+            'assets/peach_goma_birthday.gif': { width: 320, height: 320 }  // horizontal
         };
         
         // Store DOM references
