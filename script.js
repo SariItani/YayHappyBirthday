@@ -29,7 +29,7 @@ class AuroraExperience {
                 gifs: [
                     { url: "TRebCjNbc4dIA", duration: 14000 },
                     { url: "9LZTcawH3mc8V2oUqk", duration: 32000 },
-                    { url: "assets/peach_goma_birthday.gif", duration: null }
+                    { url: "assets/peach_birthday.gif", duration: null }
                 ],
                 dialogues: [
                     { text: "Many lives this world has witnessed...", duration: 3000 },
