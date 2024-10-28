@@ -18,9 +18,10 @@ class AuroraExperience {
                     { text: "Happiness was never about perfection, pity!", duration: 3000 },
                     { text: "We are happy when we're well and together!", duration: 4000 },
                     { text: "And most importantly...", duration: 2000 },
-                    { text: "When we have something to live for.", duration: 5000 },
+                    { text: "When we have something to live for...", duration: 5000 },
                     { text: "And to love the entire universe,", duration: 3000 },
-                    { text: "We must be kind to ourselves...", duration: 7000 }
+                    { text: "We must be kind to ourselves.", duration: 7000 },
+                    { text: "HAPPY BIRTHDAY!", duration: 10000 }
                 ]
             },
             no: {
@@ -35,7 +36,11 @@ class AuroraExperience {
                     { text: "That which you'll be remembered for?", duration: 4000 },
                     { text: "Here you are today, as perfect as you can get!", duration: 4000 },
                     { text: "And so you live on...", duration: 2000 },
-                    { text: "Your legacy is engraved within us to be remembered, forever.", duration: 6000 }
+                    { text: "Your legacy is engraved within us to be remembered, forever.", duration: 7000 },
+                    { text: "And you're perfect the way you are...", duration: 5000 },
+                    { text: "So as the years come and go,...", duration: 3000 },
+                    { text: "Never Change!", duration: 5000 },
+                    { text: "And HAPPY BIRTHDAY!", duration: 10000 }
                 ]
             }
         };
