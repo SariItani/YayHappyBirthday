@@ -6,7 +6,8 @@ class AuroraExperience {
                 gifs: [
                     { url: "10GVNnqO2ZoAh2", duration: 14000 },
                     { url: "l0MYvHoZeo043Gf9S", duration: 14000 },
-                    { url: "pI43YlhMoPqsE", duration: null }
+                    { url: "pI43YlhMoPqsE", duration: 25000 },
+                    { url: "assets/peach_goma_birthday.gif", duration: null }
                 ],
                 dialogues: [
                     { text: "Each day we thrive to become better...", duration: 4000 },
@@ -27,7 +28,8 @@ class AuroraExperience {
             no: {
                 gifs: [
                     { url: "TRebCjNbc4dIA", duration: 14000 },
-                    { url: "9LZTcawH3mc8V2oUqk", duration: null }
+                    { url: "9LZTcawH3mc8V2oUqk", duration: 35000 },
+                    { url: "assets/peach_birthday.gif", duration: null }
                 ],
                 dialogues: [
                     { text: "Many lives this world has witnessed...", duration: 3000 },
@@ -50,7 +52,8 @@ class AuroraExperience {
             'l0MYvHoZeo043Gf9S': { width: 480, height: 480 },  // square
             'pI43YlhMoPqsE': { width: 344, height: 480 },  // vertical
             'TRebCjNbc4dIA': { width: 480, height: 458 },  // almost square
-            '9LZTcawH3mc8V2oUqk': { width: 480, height: 336 }  // horizontal
+            'assets/peach_birthday.gif': { width: 180, height: 176 },  // horizontal
+            'assets/peach_goma_birthday.gif': { width: 260, height: 260 }  // horizontal
         };
         
         // Store DOM references
@@ -639,8 +642,15 @@ class AuroraExperience {
                 objectFit: displayStrategy.objectFit
             });
             
-            // Set source and wait for load
-            this.elements.phase4Gif.src = `https://media.giphy.com/media/${gif.url}/giphy.gif`;
+            // Check if the URL is local or remote
+            if (gif.url.startsWith("assets/")) {
+                // Local path
+                this.elements.phase4Gif.src = gif.url;
+            } else {
+                // Remote path from Giphy
+                this.elements.phase4Gif.src = `https://media.giphy.com/media/${gif.url}/giphy.gif`;
+            }
+            // Wait for the GIF to load
             await new Promise((resolve) => {
                 this.elements.phase4Gif.onload = resolve;
             });
