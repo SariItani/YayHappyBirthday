@@ -52,6 +52,7 @@ class AuroraExperience {
             'l0MYvHoZeo043Gf9S': { width: 480, height: 480 },  // square
             'pI43YlhMoPqsE': { width: 344, height: 480 },  // vertical
             'TRebCjNbc4dIA': { width: 480, height: 458 },  // almost square
+            '9LZTcawH3mc8V2oUqk': { width: 480, height: 336 },  // horizontal
             'assets/peach_birthday.gif': { width: 180, height: 176 },  // horizontal
             'assets/peach_goma_birthday.gif': { width: 260, height: 260 }  // horizontal
         };
