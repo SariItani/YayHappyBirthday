@@ -46,6 +46,27 @@ class AuroraExperience {
                 ]
             }
         };
+
+        this.assets = {
+            audio: {
+                'background-music': 'background-music.mp3',
+                'dialog-music': 'dialog-music.mp3',
+                'eat-sound': 'eat-sound.mp3',
+                'theme': 'theme.mp3'
+            },
+            images: {
+                'aurora': 'aurora.gif',
+                'peach-birthday': 'assets/peach_birthday.gif',
+                'peach-goma-birthday': 'assets/peach_goma_birthday.gif'
+            },
+            giphy: [
+                '10GVNnqO2ZoAh2',
+                'l0MYvHoZeo043Gf9S',
+                'pI43YlhMoPqsE',
+                'TRebCjNbc4dIA',
+                '9LZTcawH3mc8V2oUqk'
+            ]
+        };
         
         this.gifMetadata = {
             '10GVNnqO2ZoAh2': { width: 287, height: 480 },  // vertical
@@ -135,7 +156,13 @@ class AuroraExperience {
 
     updateLoadingProgress(progress) {
         if (this.elements.progressBar) {
-            this.elements.progressBar.style.width = `${Math.min(progress * 100, 100)}%`;
+            // Smooth out the progress bar animation
+            const currentWidth = parseFloat(this.elements.progressBar.style.width) || 0;
+            const targetWidth = Math.min(progress * 100, 100);
+            
+            // Animate to the new width
+            this.elements.progressBar.style.transition = 'width 0.3s ease';
+            this.elements.progressBar.style.width = `${targetWidth}%`;
         }
     }
 
@@ -248,66 +275,116 @@ class AuroraExperience {
             const startBtn = document.getElementById('start-btn');
             startBtn.addEventListener('click', async () => {
                 startBtn.style.display = 'none';
-
-                await this.preloadAssets();
-
-                this.generateStars();
-                this.setupEventListeners();
-                this.setupCursorAnimation();
-                this.hideLoadingScreen();
-                this.startBackgroundMusic();
+                
+                try {
+                    await this.preloadAssets();
+                    
+                    this.generateStars();
+                    this.setupEventListeners();
+                    this.setupCursorAnimation();
+                    this.hideLoadingScreen();
+                    this.startBackgroundMusic();
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    this.handleError('Failed to initialize experience. Please try again.');
+                }
             });
         } catch (error) {
-            console.error('Initialization error:', error);
-            this.handleError('Failed to initialize experience');
+            console.error('Initial setup error:', error);
+            this.handleError('Failed to set up experience');
         }
     }
-    
+
     handleError(message) {
         console.error(message);
-        this.elements.loadingScreen.innerHTML = `
-            <div class="loading-content">
-                <h2>Error Loading Experience</h2>
-                <p>${message}</p>
-                <button onclick="location.reload()">Retry</button>
-            </div>
-        `;
+        if (this.elements.loadingScreen) {
+            this.elements.loadingScreen.innerHTML = `
+                <div class="loading-content">
+                    <h2>Loading Error</h2>
+                    <p>${message}</p>
+                    <button class="retry-button" onclick="location.reload()">Retry</button>
+                </div>
+            `;
+        }
     }
 
     async preloadAssets() {
-        const totalAssets = Object.keys(this.audio).length + 1; // +1 for aurora.gif
+        const totalAssets = Object.keys(this.assets.audio).length + 
+                           Object.keys(this.assets.images).length + 
+                           this.assets.giphy.length;
         let loadedAssets = 0;
 
         try {
-            const loadPromises = [
-                // Preload aurora gif
-                new Promise((resolve, reject) => {
+            // Create arrays to hold all loading promises
+            const loadingPromises = [];
+
+            // Load audio files
+            Object.entries(this.assets.audio).forEach(([key, path]) => {
+                const audioPromise = new Promise((resolve, reject) => {
+                    const audio = new Audio();
+                    audio.addEventListener('canplaythrough', () => {
+                        loadedAssets++;
+                        this.updateLoadingProgress(loadedAssets / totalAssets);
+                        this.audio[key] = audio;
+                        resolve();
+                    }, { once: true });
+                    
+                    audio.addEventListener('error', (e) => {
+                        reject(new Error(`Failed to load audio: ${path}`));
+                    }, { once: true });
+                    
+                    audio.src = path;
+                    audio.load();
+                });
+                loadingPromises.push(audioPromise);
+            });
+
+            // Load local images
+            Object.entries(this.assets.images).forEach(([key, path]) => {
+                const imagePromise = new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         loadedAssets++;
                         this.updateLoadingProgress(loadedAssets / totalAssets);
                         resolve();
                     };
-                    img.onerror = () => reject(new Error('Failed to load aurora.gif'));
-                    img.src = 'aurora.gif';
-                }),
-                
-                // Preload audio files
-                ...Object.entries(this.audio).map(([key, audio]) => new Promise((resolve, reject) => {
-                    audio.addEventListener('canplaythrough', () => {
+                    img.onerror = () => {
+                        reject(new Error(`Failed to load image: ${path}`));
+                    };
+                    img.src = path;
+                });
+                loadingPromises.push(imagePromise);
+            });
+
+            // Load Giphy GIFs
+            this.assets.giphy.forEach(giphyId => {
+                const giphyPromise = new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
                         loadedAssets++;
                         this.updateLoadingProgress(loadedAssets / totalAssets);
                         resolve();
-                    }, { once: true });
-                    audio.addEventListener('error', () => reject(new Error(`Failed to load ${key} audio`)), { once: true });
-                    audio.load();
-                }))
-            ];
+                    };
+                    img.onerror = () => {
+                        reject(new Error(`Failed to load Giphy GIF: ${giphyId}`));
+                    };
+                    img.src = `https://media.giphy.com/media/${giphyId}/giphy.gif`;
+                });
+                loadingPromises.push(giphyPromise);
+            });
 
-            await Promise.all(loadPromises);
+            // Show initial loading state
+            this.updateLoadingProgress(0);
+
+            // Wait for all assets to load
+            await Promise.all(loadingPromises);
+
+            // Ensure progress bar shows 100% at the end
+            this.updateLoadingProgress(1);
+
         } catch (error) {
             console.error('Asset loading error:', error);
-            this.handleError('Failed to load necessary assets. Please refresh the page.');
+            this.handleError('Failed to load necessary assets. Please check your connection and refresh the page.');
             throw error;
         }
     }
