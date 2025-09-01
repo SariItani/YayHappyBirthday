@@ -289,3 +289,63 @@ body, html {
   max-width: 60%;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+
+#health-bar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 12px;
+  background: red;
+  border: 2px solid white;
+  border-radius: 6px;
+  width: 100px; /* full health = 100px */
+  z-index: 9999;
+  transition: width 0.2s ease;
+}
+
+.enemy {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: red;
+}
+
+.aura {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 0%, rgba(255, 255, 0, 0.1) 50%, transparent 100%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+    animation: auraGlow 2s infinite alternate;
+}
+
+@keyframes auraGlow {
+    0% { 
+        box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% { 
+        box-shadow: 0 0 40px rgba(255, 255, 0, 0.6);
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+.friend {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 6;
+    animation: friendGlow 1.5s infinite alternate;
+}
+
+@keyframes friendGlow {
+    0% { box-shadow: 0 0 10px currentColor; }
+    100% { box-shadow: 0 0 20px currentColor; }
+}
